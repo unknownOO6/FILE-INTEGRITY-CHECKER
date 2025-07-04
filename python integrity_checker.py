@@ -4,7 +4,7 @@ import json
 import time
 from datetime import datetime
 
-# The name of the file where we will store the baseline hashes.
+
 BASELINE_FILE = "hashes.json"
 
 def calculate_hash(filepath):
@@ -12,7 +12,7 @@ def calculate_hash(filepath):
     sha256_hash = hashlib.sha256()
     try:
         with open(filepath, "rb") as f:
-            # Read the file in 4KB chunks to handle large files efficiently.
+         
             for byte_block in iter(lambda: f.read(4096), b""):
                 sha256_hash.update(byte_block)
             return sha256_hash.hexdigest()
@@ -28,13 +28,13 @@ def get_hashes_from_directory(directory):
     hashes = {}
     for root, _, files in os.walk(directory):
         for filename in files:
-            # We don't want to hash our own baseline file.
+            
             if filename == BASELINE_FILE:
                 continue
             filepath = os.path.join(root, filename)
             file_hash = calculate_hash(filepath)
             if file_hash:
-                # Store path relative to the monitored directory
+                
                 relative_path = os.path.relpath(filepath, directory)
                 hashes[relative_path] = file_hash
     return hashes
@@ -89,14 +89,14 @@ def check_integrity(directory):
     modified_files = []
     new_files = []
     
-    # Check for modified and new files
+ 
     for filepath, current_hash in current_hashes.items():
         if filepath not in baseline_hashes:
             new_files.append(filepath)
         elif baseline_hashes[filepath] != current_hash:
             modified_files.append(filepath)
 
-    # Check for deleted files
+
     deleted_files = [
         filepath for filepath in baseline_hashes 
         if filepath not in current_hashes
